@@ -7,7 +7,7 @@ namespace RTS {
 		public static float ScrollSpeed { get { return 25f; } }
 		public static int ScrollWidth { get { return 15; } }
 
-		public static int ZoomMin { get { return 4; } }
-		public static int ZoomMax { get { return 10; } }
+		public static int ZoomMin { get { return 1; } }
+		public static int ZoomMax { get { return 5; } }
 	}
 }
