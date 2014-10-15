@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Object : MonoBehaviour {
+public class WorldObject : MonoBehaviour {
 
 	public string objectName;
 	public Texture2D buildImage;
