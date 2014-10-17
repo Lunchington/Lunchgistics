@@ -36,18 +36,19 @@ public class CameraControl : MonoBehaviour {
 		Vector3 movement = new Vector3 (0, 0, 0);
 
 		if((xpos >= 0 && xpos <= ResourceManager.ScrollWidth) || moveHoriz < 0){
-			movement.x -= ResourceManager.ScrollSpeed;
+			movement.x -= ScrollSpeed();
 		}
 
 		if((xpos <= Screen.width && xpos >= Screen.width - ResourceManager.ScrollWidth) || moveHoriz > 0) {
-			movement.x += ResourceManager.ScrollSpeed;
+			movement.x += ScrollSpeed();
 		}
 		
 		//vertical camera movement
 		if((ypos >= 0 && ypos < ResourceManager.ScrollWidth) || moveVert < 0 ) {
-			movement.y -= ResourceManager.ScrollSpeed;
+			movement.y -= ScrollSpeed();
+
 		} if((ypos <= Screen.height && ypos > Screen.height - ResourceManager.ScrollWidth)|| moveVert > 0 ) {
-			movement.y += ResourceManager.ScrollSpeed;
+			movement.y += ScrollSpeed();
 		}
 
 		movement = Camera.mainCamera.transform.TransformDirection(movement);
@@ -70,19 +71,32 @@ public class CameraControl : MonoBehaviour {
 
 	}
 
+
+	private float ScrollSpeed() {
+		return Camera.main.orthographicSize * ResourceManager.ScrollSpeed;
+	}
 	private void ScrollCamera() {
 
-		if (Input.GetAxis("Mouse ScrollWheel") > 0) // forward
+		if (Input.GetAxis("Mouse ScrollWheel") > 0 && camera.orthographicSize > ResourceManager.ZoomMin) // forward
 		{
-			Camera.main.orthographicSize--;
+			ZoomOrthoCamera(Camera.main.ScreenToWorldPoint(Input.mousePosition), -0.5f);
+
 		}
-		if (Input.GetAxis("Mouse ScrollWheel") < 0) // back
+		if (Input.GetAxis("Mouse ScrollWheel") < 0  && camera.orthographicSize < ResourceManager.ZoomMax) // back
 		{
-			Camera.main.orthographicSize++;
+			ZoomOrthoCamera(Camera.main.ScreenToWorldPoint(Input.mousePosition), 0.5f);
 		}
 
 		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, ResourceManager.ZoomMin, ResourceManager.ZoomMax );
 		ClampCam();
+	}
+
+	void ZoomOrthoCamera(Vector3 zoomTowards, float amount)
+	{
+
+		
+		Camera.main.orthographicSize += amount;
+		
 	}
 
 	private void ClampCam() {
@@ -99,10 +113,9 @@ public class CameraControl : MonoBehaviour {
 
 		camPosNew.x = Mathf.Clamp (Camera.main.transform.position.x, minX, maxX);
 		camPosNew.y = Mathf.Clamp (Camera.main.transform.position.y, minY, maxY);
-		camPosNew.z = -10f;
+		camPosNew.z = ResourceManager.zLevelDefault;
 
 		Camera.main.transform.position = camPosNew;
-		Debug.Log (Extents().x + " " + maxX + " " + map.bounds.max.x + " " + camPosNew);
 
 	}
 
