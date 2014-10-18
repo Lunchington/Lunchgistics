@@ -5,15 +5,11 @@ using RTS;
 public class CameraControl : MonoBehaviour {
 
 	private MeshRenderer map;
-	private Transform mapPos;
-
 
 	// Use this for initialization
 	void Start () {
 		GameObject m = GameObject.FindGameObjectWithTag ("Map");
-
 		map = m.GetComponentInChildren<MeshRenderer>();
-		mapPos = m.transform;
 	}
 	
 	// Update is called once per frame
@@ -51,20 +47,18 @@ public class CameraControl : MonoBehaviour {
 			movement.y += ScrollSpeed();
 		}
 
-		movement = Camera.mainCamera.transform.TransformDirection(movement);
+		movement = Camera.main.transform.TransformDirection(movement);
 		movement.z = -10;
 
-		Vector3 origin = Camera.mainCamera.transform.position;
+		Vector3 origin = Camera.main.transform.position;
 		Vector3 destination = origin;
 		destination.x += movement.x;
 		destination.y += movement.y;
 		destination.z = -10f;
 
 
-
-
 		if(destination != origin) {
-			Camera.mainCamera.transform.position = Vector3.MoveTowards(origin, destination, Time.deltaTime * ResourceManager.ScrollSpeed);
+			Camera.main.transform.position = Vector3.MoveTowards(origin, destination, Time.deltaTime * ResourceManager.ScrollSpeed);
 		}
 
 		ClampCam();
@@ -75,19 +69,20 @@ public class CameraControl : MonoBehaviour {
 	private float ScrollSpeed() {
 		return Camera.main.orthographicSize * ResourceManager.ScrollSpeed;
 	}
+
+
 	private void ScrollCamera() {
 
 		if (Input.GetAxis("Mouse ScrollWheel") > 0 && camera.orthographicSize > ResourceManager.ZoomMin) // forward
 		{
-			ZoomOrthoCamera(Camera.main.ScreenToWorldPoint(Input.mousePosition), -0.5f);
+			ZoomOrthoCamera(Camera.main.ScreenToWorldPoint(Input.mousePosition), -ResourceManager.ZoomAmt);
 
 		}
 		if (Input.GetAxis("Mouse ScrollWheel") < 0  && camera.orthographicSize < ResourceManager.ZoomMax) // back
 		{
-			ZoomOrthoCamera(Camera.main.ScreenToWorldPoint(Input.mousePosition), 0.5f);
+			ZoomOrthoCamera(Camera.main.ScreenToWorldPoint(Input.mousePosition), ResourceManager.ZoomAmt);
 		}
 
-		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, ResourceManager.ZoomMin, ResourceManager.ZoomMax );
 		ClampCam();
 	}
 
@@ -108,6 +103,7 @@ public class CameraControl : MonoBehaviour {
 		float minY = Extents().y + map.bounds.min.y;
 		float maxY = map.bounds.max.y - Extents().y;
 
+		Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, ResourceManager.ZoomMin, ResourceManager.ZoomMax );
 
 		Vector3 camPosNew = Vector3.zero;
 
@@ -116,6 +112,8 @@ public class CameraControl : MonoBehaviour {
 		camPosNew.z = ResourceManager.zLevelDefault;
 
 		Camera.main.transform.position = camPosNew;
+
+
 
 	}
 

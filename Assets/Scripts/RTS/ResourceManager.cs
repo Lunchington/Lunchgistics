@@ -11,5 +11,7 @@ namespace RTS {
 
 		public static int ZoomMin { get { return 1; } }
 		public static int ZoomMax { get { return 5; } }
+		public static float ZoomAmt { get { return 0.5f; } }
+
 	}
 }
